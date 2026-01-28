@@ -1,0 +1,98 @@
+Implemente um formulário interativo de onboarding, mobile-first, para o produto “NTG Trips Club”.
+Objetivo do formulário:
+Classificar o perfil de viagem do usuário (“tribo”)
+Coletar preferências comportamentais reais
+Preparar recomendações personalizadas de trips
+Alimentar lógica de segmentação no backend
+Requisitos gerais:
+Fluxo em múltiplos passos (1 pergunta por tela)
+Máximo de 6 perguntas
+Interação por botões grandes (tap-friendly)
+Barra de progresso discreta
+Linguagem clara, adulta e direta
+Duração total: menos de 2 minutos
+Deve funcionar bem em mobile
+Estrutura do fluxo:
+Tela inicial:
+Headline: “Como você gosta de viajar?”
+Subtexto: “Sem certo ou errado. Queremos entender seu ritmo.”
+Botão: “Começar”
+Pergunta 1 – Ritmo:
+Texto:
+“Como você prefere viver um dia de viagem?”
+Opções (botões):
+“Com tempo, pausas e pouca pressa”
+“Em movimento, mas sem correria”
+“Quero aproveitar bastante o dia”
+Salvar resposta como:
+ritmo = lento | moderado | intenso
+Pergunta 2 – Motivação principal:
+Texto:
+“O que mais te puxa para uma viagem?”
+Opções:
+“Natureza e paisagens”
+“História e contexto”
+“Sabores e gastronomia”
+“Estética e cenários”
+“Ir onde quase ninguém vai”
+Salvar como:
+motivacao = natureza | cultura | gastronomia | visual | exploracao
+Pergunta 3 – Tipo de grupo:
+Texto:
+“Você se sente melhor viajando como?”
+Opções:
+“Grupo maior, bem organizado”
+“Grupo pequeno, mais próximo”
+“Pouquíssimas pessoas”
+“Depende da viagem”
+Salvar como:
+grupo = onibus | van | pequeno | flexivel
+Pergunta 4 – Planejamento:
+Texto:
+“Qual frase mais parece com você?”
+Opções:
+“Gosto de saber tudo antes de ir”
+“Prefiro estrutura com alguma liberdade”
+“Gosto de deixar espaço para o inesperado”
+Salvar como:
+planejamento = estruturado | equilibrado | aberto
+Pergunta 5 – Social:
+Texto:
+“Antes mesmo da viagem, você prefere:”
+Opções:
+“Conhecer quem também se interessou”
+“Só observar, sem me expor”
+“Depende da viagem”
+Salvar como:
+social = publico | anonimo | flexivel
+Pergunta 6 – Contexto:
+Texto:
+“Hoje, você está:”
+Opções:
+“Morando em Portugal”
+“Visitando Portugal”
+“Um pouco dos dois”
+Campo opcional:
+“Cidade base” (texto livre)
+Salvar como:
+contexto = residente | visitante | hibrido
+cidadeBase = texto
+Tela final – Resultado:
+Headline:
+“Sua tribo está formada.”
+Texto dinâmico (exemplo):
+“Pelo seu perfil, você tende a gostar de viagens com ritmo {{ritmo}}, grupos {{grupo}} e foco em {{motivacao}}.”
+CTA principal:
+“Ver trips disponíveis”
+Comportamento técnico esperado:
+Armazenar respostas em um objeto estruturado (JSON)
+Permitir envio ao backend após conclusão
+Preparar campos para:
+tribePrimary
+tribeSecondary
+tags comportamentais
+UX fluida, sem reload de página
+Entrega esperada:
+Componente de formulário interativo funcional
+Fluxo completo com estados (pergunta atual, progresso, respostas)
+Estrutura clara para integração com backend e recomendação de trips

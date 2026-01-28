@@ -1,0 +1,80 @@
+Criar uma landing page para a NTG Trips Club, com as orientacoes visuais baseadas no print de tela
+Copy da Landing Page – NTG Trips Club
+HERO
+NTG Trips Club
+Viagens curtas. Lugares não turísticos. Pessoas na mesma sintonia.
+Descubra Portugal além do óbvio.
+Roteiros de 1 dia, destinos secretos e experiências que não aparecem no Google nem nos pacotes de agência.
+👉 Entre no clube. Escolha sua tribo. Viaje quando fizer sentido.
+[Entrar no Trips Club]
+⸻
+SUB-HERO (manifesto curto)
+O NTG Trips Club não é um pacote turístico.
+É um clube de pessoas curiosas, inquietas e minimamente interessantes que querem explorar Portugal com tempo, critério e boas companhias.
+Nada de multidões, filas ou “paradas obrigatórias”.
+Aqui, o destino só acontece quando a tribo certa se forma.
+⸻
+COMO FUNCIONA (3 passos simples)
+Entre no clube
+Crie sua conta, diga como gosta de viajar e definimos sua “tribo”.
+Explore as trips
+Roteiros de 1 dia pela Serra da Estrela, Gerês, Aldeias de Xisto, rotas secretas e lugares que não vivem de selfie.
+Demonstre interesse
+Algumas viagens já têm data.
+Outras só ganham data quando há pessoas suficientes interessadas.
+Você decide se aparece na lista pública ou se prefere ficar anônimo.
+O termômetro sobe. A viagem acontece.
+⸻
+O TERMÔMETRO (explicação clara)
+Cada trip tem um termômetro de interesse.
+Quando atinge o número ideal de pessoas, a viagem ganha data.
+Sem achismo. Sem spam. Sem “talvez”.
+📍 Exemplo:
+Serra da Estrela (Van – 8 pessoas)
+Interessados: 6/8 → Quase na hora de datar
+⸻
+TIPOS DE VIAGEM
+Escolha o formato que combina com você:
+• Ônibus (até 50 pessoas)
+Acessível, bem organizado e fora do circuito turístico tradicional.
+• Van (até 8 pessoas)
+Destinos mais secretos, grupos pequenos e experiência mais próxima.
+• Carro (até 3 pessoas)
+Curadoria máxima. Ritmo humano. Quase uma expedição.
+• Motorhome
+Roteiros sugeridos + intermediação de autocaravana para quem quer liberdade total.
+⸻
+O DIFERENCIAL SOCIAL (sem virar bagunça)
+Antes mesmo da viagem acontecer, você pode:
+• ver quem mais se interessou pela mesma trip
+• conectar-se com pessoas da mesma tribo
+• decidir se quer viajar acompanhado ou só observar
+Privacidade é regra.
+Aparece quem quer. O resto segue anônimo.
+⸻
+PARA QUEM É
+✔ Mora em Portugal ou está viajando pelo país
+✔ Prefere experiências reais a pontos turísticos lotados
+✔ Gosta de natureza, cultura, história e bons caminhos
+✔ Não tem paciência para turismo de massa
+PARA QUEM NÃO É
+✖ Quem quer “checklist de atrações”
+✖ Quem só viaja pelo preço
+✖ Quem acha que turismo é só Instagram
+⸻
+CTA FINAL
+O destino você já sabe.
+Falta saber com quem e quando.
+Entre no NTG Trips Club
+Descubra trips. Encontre sua tribo. Viaje melhor.
+⸻
+Estrutura da LP (pra não virar caos visual)
+• Hero (headline + CTA)
+• Manifesto curto
+• Como funciona (3 cards)
+• Termômetro explicado (com mock visual)
+• Tipos de viagem (grid)
+• Social & privacidade
+• Para quem é / não é
+• CTA final
+Mobile-first. Sem excesso de texto por bloco.

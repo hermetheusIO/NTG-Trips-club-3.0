@@ -1,0 +1,155 @@
+Quero que você atualize o projeto atual (web-app NTG Coimbra) aplicando melhorias de UX, copy e navegação no funil do QR Code. Preserve o estilo visual (dark premium com dourado, fundo com imagem, cards arredondados), mas ajuste a arquitetura e a ordem do formulário para reduzir fricção e aumentar conversão.
+
+1) HOME (/ ou /coimbra — a tela inicial do QR)
+No topo: manter logo NTG e seletor de idioma.
+
+ATUALIZAR CTAs PRINCIPAIS (substituir os 3 botões/accordions atuais)
+- Botão 1 (CTA primário): substituir “#Ask_to_Teresa” por:
+  Texto: “Quero conhecer Coimbra”
+  Subtexto pequeno: “Receba um plano personalizado em 60 segundos”
+  Ação: navegar para /coimbra/conhecer/form
+
+- Botão 2: substituir “Experiências” por:
+  Texto: “Quero viver Coimbra”
+  Subtexto pequeno: “Experiências recomendadas (pagas e gratuitas)”
+  Ação: navegar para /coimbra/viver
+
+- Botão 3: substituir “NTG Trips” por:
+  Texto: “Quero conhecer outros lugares”
+  Subtexto pequeno: “Day-trips e viagens curadas saindo de Coimbra”
+  Ação: navegar para /trips
+
+AJUSTAR “DIGITAIS”
+- Em vez de “Digitais” com “ver detalhes”, transformar em CTA mais forte:
+  Texto: “Quero dicas rápidas (sem conversa)”
+  Subtexto: “Guia gastronômico, pins e roteiros curtos”
+  Ação: navegar para /digitais (criar se não existir) ou abrir um painel de “conteúdos digitais” na própria home.
+  Importante: Digitais deve ser opcional e menos destacado que os 3 CTAs principais.
+
+AJUSTE DE COPY NA HOME
+- Título mantém: “Coimbra como você nunca viveu.”
+- Subtexto (ajuste sutil): “Sem tour genérico. Sem armadilha turística. Curadoria real da NTG.”
+- Remover termos técnicos (como “ver detalhes”) e trocar por microcopy orientada à ação.
+
+2) FORMULÁRIO TYPEFORM-LIKE ( /coimbra/conhecer/form )
+Ajustar a ordem e timing das perguntas para reduzir abandono e aumentar sensação de personalização.
+O formulário deve ser 1 pergunta por tela, com transições suaves, indicador de progresso em barra sutil, botão voltar discreto e suporte a Enter.
+
+NOVA ORDEM DAS PERGUNTAS (7 telas)
+- Step 1: Tempo em Coimbra
+  Pergunta: “Quanto tempo você tem em Coimbra agora?”
+  Opções: 1–2h | Meio dia | Dia inteiro | Mais de um dia
+  Output: time_bucket
+
+- Step 2: Companhia
+  Pergunta: “Você está explorando Coimbra…”
+  Opções: Sozinho(a) | Em casal | Com amigos | Em família
+  Output: party_type
+
+- Step 3: Interesses (multi-select)
+  Pergunta: “Posso te ajudar com: (pode marcar mais de uma)”
+  Opções:
+    - Pontos turísticos mais visitados (com história)
+    - Pontos secretos de Coimbra (fora do óbvio)
+    - Gastronomia
+    - Experiências gratuitas (rotas a pé, jardins, atividades)
+    - Experiências que recomendamos (pagas)
+  Output: interests[]
+
+- Step 4: Estilo de orientação
+  Pergunta: “Como você prefere receber as recomendações?”
+  Opções:
+    - Sugestões rápidas
+    - Com contexto e história
+    - Guiado passo a passo
+    - Prefiro conversar com a Teresa
+  Output: guidance_style
+
+- Step 5: País de origem
+  Pergunta: “De onde você vem?”
+  Sub: “Só pra eu ajustar o jeito de te guiar.”
+  Input: seletor com busca (autocomplete) + lista sugerida (Portugal, Brasil, Espanha, França, EUA, Reino Unido, Alemanha, Outro)
+  Output: country_code, country_name
+
+- Step 6: Nome
+  Pergunta: “Como posso te chamar?”
+  Sub: “Prometo não transformar isso em mailing chato.”
+  Input: text
+  Output: first_name
+
+- Step 7: Faixa etária (OPCIONAL com botão pular)
+  Pergunta: “Sua faixa etária”
+  Sub: “Ajuda a sugerir o ritmo certo (e evitar rolê errado).”
+  Opções: 18–25 | 26–35 | 36–50 | 51+
+  Deve ter botão “Pular”
+  Output: age_range ou null
+
+TELA FINAL (resultado)
+- Copy mais “mágica” e menos burocrática:
+  Em vez de “Perfeito, com base no que você disse…”
+  usar: “Já entendi o seu estilo. Posso te guiar agora.”
+- Mostrar um resumo do perfil do usuário (curto, em bullets).
+- Mostrar 3 sugestões iniciais (pode ser placeholder por regras simples):
+  - Se interests inclui gastronomia -> sugerir “Guia Gastronômico”
+  - Se inclui oculto -> sugerir “Pontos secretos”
+  - Se inclui experiencias_pagas -> sugerir “Experiências recomendadas”
+- CTA principal:
+  Botão: “Abrir WhatsApp da Teresa”
+  Link: wa.me para +351931358278 com mensagem pré-preenchida contendo lead_id + briefing
+
+3) OUTPUTS e SEGMENTAÇÃO (obrigatório)
+Ao finalizar o formulário, gerar:
+A) TERESA_BRIEF (string) pronto para WhatsApp, curto, escaneável, com:
+  - nome
+  - tempo
+  - companhia
+  - interesses
+  - estilo
+  - país
+  - idade (se tiver)
+  - lead_id
+B) CRM_LEAD (JSON) com:
+  lead_id, created_at, source, language,
+  identity {first_name, country_code, country_name, age_range},
+  context {time_bucket, party_type, guidance_style},
+  interests [],
+  tags [],
+  segment_primary,
+  teresa_mode_suggestions [],
+  whatsapp {to, prefilled_message}
+
+Tags automáticas:
+- tempo:curto/medio/longo/estadia
+- companhia:solo/casal/grupo/familia
+- interesse:classicos/oculto/gastronomia/gratis/experiencias_pagas
+- estilo:rapido/contexto/guiado/conversa
+- pais:XX
+- idade:faixa (se existir)
+- perfil:internacional/nacional (inferir por country)
+
+Segmentação computeSegment():
+- TOURIST_PREMIUM:
+  country != Portugal AND time_bucket in [medio,longo,estadia] AND guidance_style in [contexto,guiado,conversa]
+- DAYTRIP_PT:
+  country == Portugal AND time_bucket in [medio,longo] AND interests inclui experiencias_pagas
+- LOCAL_CURIOUS:
+  country == Portugal AND time_bucket == curto AND (interests inclui gastronomia OR oculto)
+- EXPLORER_AUTONOMOUS:
+  guidance_style == rapido AND interests inclui gratis
+Se nenhuma regra bater, default: GENERAL
+
+4) AJUSTES DE UX FINOS (aplicar no projeto)
+- Substituir contador “1/7” por barra de progresso fina e discreta.
+- Botão voltar discreto (ícone + texto pequeno).
+- Evitar redundância visual: Step 3 e 4 devem parecer diferentes (interesses com checkboxes/cards e estilo com radio/cards).
+- Manter tudo mobile-first e sem scroll longo; quando necessário, usar scroll interno suave.
+- Atualizar labels “ver detalhes” para microcopy acionável (ex.: “Explorar”, “Ver opções”, “Abrir guia”).
+
+5) Entrega
+- Atualize rotas/labels conforme acima.
+- Garanta que a home esteja coerente com o novo posicionamento (3 CTAs claros).
+- Não quebre links existentes; se necessário, crie redirects internos.
+- Faça commits/alterações organizadas e atualize README com o que mudou.
+
+IMPORTANTE
+Preserve o visual do fundo e identidade do NTG, mas otimize navegação e copy para conversão via QR Code na rua.

@@ -1,0 +1,422 @@
+# NTG Trips Club — Especificação para Replit (MVP + Evolução)
+> Objetivo: implementar o sistema do **NTG Trips Club** na plataforma NTG, com **roteiros-proposta** para votação, **lista de interessados** (com opção anónimo), regras de **vantagens para membros**, e a lógica de **abrir viagem** (definir data + preço final + reservas) quando houver tração suficiente.
+
+---
+
+## 1) Conceito do Produto (Club)
+### O que é
+O **NTG Trips Club** é um clube onde a NTG publica **Roteiros-Proposta (sem data fixa)** para os Travellers:
+1) **votarem**
+2) **entrarem na lista de interessados**
+3) quando atingir um mínimo viável → a NTG **abre a viagem** (data + preço final + reservas)
+
+### Regras fixas (todas as viagens NTG)
+- **Todas as viagens são documentadas** (fotos + vídeos) e entregues num **Álbum Digital** para todos os participantes fazerem download.
+- É possível contratar **sessão individual** (retrato, casal, família) como **add-on**.
+- Toda viagem tem sempre **2 programações**:
+  - **Essencial (económica)**: sem obrigar gastos (paisagens, centros históricos, trilhos, miradouros etc.)
+  - **Completa (paga)**: visitas/experiências opcionais (castelos, museus, barco, provas de vinho etc.)
+- O grupo pode alternar entre opções sem constrangimento; a NTG organiza pontos de encontro em momentos-chave.
+
+---
+
+## 2) Papéis e Acesso
+### Tipos de utilizador
+- **Visitante (não logado)**: pode ver roteiros-proposta e contagem agregada (votos/interessados), mas não vota nem entra na lista.
+- **Traveller (logado)**:
+  - pode votar e entrar na lista de interessados
+  - pode escolher aparecer como **anónimo** na lista pública
+- **Membro do Club (Traveller + membership ativa)**:
+  - **desconto (%)** em viagens do Club
+  - **prioridade de reserva** (janela antecipada)
+  - acesso antecipado a conteúdos (ex.: álbum publicado primeiro para membros, se quiserem)
+- **Admin NTG**:
+  - cria/edita roteiros-proposta
+  - define mínimo viável para “abrir viagem”
+  - converte proposta em viagem com data/preço final
+  - gere reservas, pagamentos, álbum digital e add-ons
+
+### Autenticação
+- Login com:
+  - **WhatsApp (número)** + senha (MVP)
+  - **Google Auth** (opcional/roadmap)
+- Perfil do utilizador:
+  - nome
+  - telefone/WhatsApp
+  - email (opcional)
+  - preferência de privacidade (default: **anónimo** na lista pública)
+
+---
+
+## 3) Entidades e Dados (modelo sugerido)
+> Pode ser SQL (Postgres/Supabase) ou equivalente. Abaixo é agnóstico, mas pronto para virar tabela.
+
+### 3.1 Users
+- id (uuid)
+- name
+- phone (unique)
+- email (optional)
+- password_hash (se não for OAuth)
+- created_at
+
+### 3.2 Memberships
+- id
+- user_id
+- status: `active | inactive | canceled`
+- tier: `club` (MVP)
+- discount_percent (ex.: 10, 15)
+- priority_window_hours (ex.: 24 ou 48)
+- started_at
+- ends_at (optional)
+
+### 3.3 TripProposals (Roteiros-Proposta)
+- id
+- slug (unique)
+- title
+- subtitle
+- region_tags (ex.: `templarios`, `douro`, `centro`, `natureza`)
+- start_city = "Coimbra"
+- destinations (array/JSON)
+- duration_hours_est (ex.: 12)
+- group_size_min / group_size_max
+- difficulty: `leve | moderada`
+- accessibility_notes (texto)
+- narrative_short (texto)
+- price_estimated_essential_min / max
+- price_estimated_complete_min / max
+- includes (array/JSON)
+- excludes (array/JSON)
+- optional_addons (array/JSON)
+- club_benefits (texto curto)
+- status: `voting | almost_ready | approved | archived`
+- viability_rule (JSON) ex.: `{ "min_interested": 10 }` ou `{ "min_votes": 30 }`
+- cover_image_url (optional)
+- created_at / updated_at
+
+### 3.4 Votes
+- id
+- proposal_id
+- user_id
+- vote_value: `up` (MVP simples)
+- created_at
+> Regra: 1 voto por user por proposta.
+
+### 3.5 Interests (Lista de Interessados)
+- id
+- proposal_id
+- user_id
+- public_visibility: `named | anonymous`
+- note (optional, ex.: “prefiro domingo”)
+- created_at
+> Regra: 1 interesse por user por proposta.
+
+### 3.6 TripInstances (Viagens Abertas / com data)
+- id
+- proposal_id
+- title (pode herdar)
+- date_start (datetime)
+- date_end (datetime)
+- meeting_point (texto)
+- final_price_essential
+- final_price_complete
+- capacity_total
+- capacity_reserved
+- booking_status: `announced | member_priority | public_open | sold_out | completed | canceled`
+- member_priority_starts_at / ends_at
+- public_sales_starts_at
+- itinerary_essential (JSON)
+- itinerary_complete (JSON)
+- created_at / updated_at
+
+### 3.7 Bookings
+- id
+- trip_instance_id
+- user_id
+- package_type: `essential | complete`
+- seats (int)
+- total_price
+- discount_applied_percent (int)
+- status: `pending | paid | canceled | refunded`
+- created_at
+
+### 3.8 AddOns (Sessão individual etc.)
+- id
+- trip_instance_id
+- name (ex.: “Sessão Individual 30min”)
+- description
+- price
+- capacity (optional)
+- active (bool)
+
+### 3.9 BookingAddOns
+- id
+- booking_id
+- addon_id
+- quantity
+- total_price
+
+### 3.10 MediaAlbums (Álbum Digital)
+- id
+- trip_instance_id
+- title
+- description
+- visibility: `participants_only | club_first_then_participants` (opcional)
+- published_at
+- download_enabled (bool)
+- created_at
+
+### 3.11 MediaItems
+- id
+- album_id
+- type: `photo | video`
+- url
+- thumb_url (optional)
+- filename
+- created_at
+
+---
+
+## 4) Regras de Negócio (lógica do sistema)
+### 4.1 Votação e Interesse
+- Proposta tem contadores:
+  - `votes_count`
+  - `interested_count`
+- Utilizador pode:
+  - votar (1x)
+  - entrar na lista (1x)
+  - escolher aparecer como **anónimo** na lista pública
+
+### 4.2 Critério para “abrir viagem”
+- Quando atingir `viability_rule` (ex.: min_interested = 10):
+  - Admin recebe indicação “Pronto para abrir”
+  - Admin cria `TripInstance` com data + preço final + capacidade + janelas de venda
+
+### 4.3 Vantagens para Membros
+- Membro do Club:
+  - aplica `discount_percent` no preço final (essential/complete)
+  - tem **priority window** (ex.: 24–48h) antes de abrir ao público
+- UI deve mostrar:
+  - “Preço para membros” e “Preço normal”
+  - timer/estado: `member_priority` vs `public_open`
+
+### 4.4 Duas programações (Essencial vs Completa)
+- Cada TripInstance deve ter:
+  - itinerário Essencial (sem entradas pagas obrigatórias)
+  - itinerário Completo (inclui visitas pagas opcionais)
+- No booking, o utilizador escolhe o package:
+  - `essential` ou `complete`
+- Itens pagos podem ser:
+  - incluídos no `complete` ou como add-on
+
+### 4.5 Álbum Digital
+- Após viagem `completed`, Admin publica álbum:
+  - participantes recebem acesso
+  - download liberado (zip opcional)
+- Sessões individuais:
+  - entregas separadas (pasta/link dedicado), associadas ao Booking/AddOn
+
+---
+
+## 5) UI/UX (páginas mínimas do MVP)
+### 5.1 Página: /club (feed de roteiros-proposta)
+Cards com:
+- capa, título, subtítulo
+- destinos (chips)
+- preço estimado (range Essencial e Completa)
+- contadores: votos + interessados
+- CTA:
+  - “Votar”
+  - “Tenho interesse”
+  - “Ver detalhes”
+
+### 5.2 Página: /club/p/:slug (detalhe do roteiro-proposta)
+Seções:
+- narrativa curta
+- mapa mental do dia (timeline simples)
+- duas programações (Essencial vs Completa)
+- inclui / não inclui
+- preço estimado (range)
+- votação + interessados
+- lista pública (nomes ou “Traveller Anónimo”)
+- CTA: votar + interesse (toggle anónimo)
+
+### 5.3 Página: /trips (viagens abertas com data)
+Lista de TripInstances com:
+- data
+- capacidade restante
+- estado (member_priority / public_open / sold_out)
+- preços (membro vs normal)
+- CTA: reservar
+
+### 5.4 Página: /trips/:id (detalhe da viagem aberta)
+- itinerário Essencial e Completo (tabs)
+- regras de encontro, duração, notas de acessibilidade
+- booking (package, lugares, add-ons)
+- política de cancelamento (texto simples)
+- após conclusão: acesso ao álbum (se participante)
+
+### 5.5 Área do utilizador: /me
+- membership status
+- votos/interesses
+- reservas
+- álbuns disponíveis
+
+### 5.6 Admin (MVP)
+- CRUD TripProposals
+- ver métricas por proposta (votos/interesse)
+- botão “Abrir viagem” → cria TripInstance
+- gerir TripInstances (datas, preços, capacidade, janelas)
+- upload/gestão do álbum
+
+---
+
+## 6) API (endpoints sugeridos)
+### Propostas
+- GET `/api/proposals`
+- GET `/api/proposals/:slug`
+- POST `/api/proposals/:id/vote`
+- POST `/api/proposals/:id/interest` (body: { visibility, note })
+- DELETE `/api/proposals/:id/interest` (optional)
+
+### Viagens abertas
+- GET `/api/trips`
+- GET `/api/trips/:id`
+- POST `/api/trips/:id/book` (package, seats, addons)
+- POST `/api/payments` (se houver integração)
+
+### Álbum
+- GET `/api/albums/:trip_id` (autorização: participante)
+- POST `/api/admin/albums` (admin)
+- POST `/api/admin/media-items` (admin upload)
+
+---
+
+## 7) Conteúdo fixo (copy para usar em todas as páginas do Club)
+### Bloco “Memórias incluídas”
+> **📸 Memórias incluídas**  
+> Todas as viagens NTG incluem registo fotográfico e em vídeo, entregue num Álbum Digital exclusivo para os participantes. Todos podem fazer download após a viagem.
+
+### Bloco “Duas programações”
+> **🎟️ Duas formas de viver a mesma viagem**  
+> Em todas as rotas existe uma programação Essencial (económica) e uma programação Completa (com visitas pagas opcionais). Você escolhe sem pressão, no dia.
+
+### Bloco “Sessão individual”
+> **✨ Sessões individuais (opcional)**  
+> Quer fotos só suas, em casal ou em família? Pode contratar uma sessão dedicada durante a viagem (sujeito a disponibilidade).
+
+---
+
+## 8) Roteiros-Proposta sugeridos (seed inicial do Club)
+> Todos saem de Coimbra e têm no mínimo 2 destinos.
+
+### 8.1 Rota dos Templários
+- **title:** Rota dos Templários
+- **subtitle:** Pedra, silêncio e história sem pressa
+- **destinations:** Tomar + (Dornes OU Castelo de Almourol)
+- **duration:** 10–12h
+- **group:** 6–12
+- **difficulty:** leve
+- **price_estimated:**
+  - essential: €45–55
+  - complete: €75–95
+- **includes:**
+  - acompanhamento NTG
+  - curadoria cultural
+  - álbum digital (fotos + vídeos)
+- **excludes:**
+  - entradas (na Essencial)
+  - almoço
+- **complete_option_examples:**
+  - Convento de Cristo (Tomar)
+  - Barco para Castelo de Almourol
+- **club_benefits:** -10% e prioridade de reserva
+- **status:** voting
+- **viability_rule:** min_interested = 10
+
+### 8.2 Rota N222 Douro
+- **title:** Rota N222 — Douro Essencial
+- **subtitle:** A estrada mais bonita de Portugal não aceita pressa
+- **destinations:** Peso da Régua + Pinhão
+- **duration:** 12–14h
+- **group:** 6–10
+- **difficulty:** leve
+- **price_estimated:**
+  - essential: €70–85
+  - complete: €110–130
+- **includes:** acompanhamento + paragens panorâmicas + álbum digital
+- **excludes:** cruzeiro/prova (se não incluído no complete)
+- **complete_option_examples:**
+  - mini-cruzeiro no Douro
+  - prova em quinta pequena
+- **club_benefits:** -15% em experiências e prioridade em épocas especiais
+- **status:** almost_ready
+- **viability_rule:** min_interested = 8
+
+### 8.3 Fé, Pedra e Mar
+- **title:** Fátima / Alcobaça / Nazaré
+- **subtitle:** Três forças de Portugal em um dia
+- **destinations:** Fátima + Alcobaça + Nazaré
+- **duration:** 11–13h
+- **group:** 8–14
+- **difficulty:** leve
+- **price_estimated:**
+  - essential: €50–60
+  - complete: €85–100
+- **includes:** acompanhamento + curadoria + álbum digital
+- **excludes:** entrada Mosteiro (se Essencial) + almoço
+- **complete_option_examples:**
+  - Mosteiro de Alcobaça (entrada)
+  - miradouro e sítio da Nazaré (organizado)
+- **club_benefits:** -10% + prioridade
+- **status:** voting
+- **viability_rule:** min_interested = 12
+
+### 8.4 Gerês Essencial
+- **title:** Gerês — Natureza Raiz
+- **subtitle:** Portugal antes de existir Portugal
+- **destinations:** Terras de Bouro + cascatas/lagoas do Gerês
+- **duration:** 12–14h
+- **group:** 6–8
+- **difficulty:** moderada (caminhadas leves a moderadas)
+- **price_estimated:**
+  - essential: €65–75
+  - complete: €95–115
+- **includes:** curadoria de trilhos + álbum digital
+- **excludes:** almoço + guia local (se for add-on)
+- **complete_option_examples:**
+  - guia local
+  - trilho exclusivo (menos turístico)
+- **club_benefits:** -15% + prioridade no verão
+- **status:** voting
+- **viability_rule:** min_interested = 8
+
+---
+
+## 9) JSON Seed (opcional para popular o banco)
+> Ajustar ao teu schema real.
+
+```json
+{
+  "trip_proposals": [
+    {
+      "slug": "rota-dos-templarios",
+      "title": "Rota dos Templários",
+      "subtitle": "Pedra, silêncio e história sem pressa",
+      "start_city": "Coimbra",
+      "destinations": ["Tomar", "Dornes"],
+      "duration_hours_est": 12,
+      "group_size_min": 6,
+      "group_size_max": 12,
+      "difficulty": "leve",
+      "price_estimated_essential_min": 45,
+      "price_estimated_essential_max": 55,
+      "price_estimated_complete_min": 75,
+      "price_estimated_complete_max": 95,
+      "includes": ["Acompanhamento NTG", "Curadoria cultural", "Álbum digital (fotos+vídeos)"],
+      "excludes": ["Entradas (na Essencial)", "Almoço"],
+      "club_benefits": "-10% e prioridade de reserva",
+      "status": "voting",
+      "viability_rule": { "min_interested": 10 }
+    }
+  ]
+}

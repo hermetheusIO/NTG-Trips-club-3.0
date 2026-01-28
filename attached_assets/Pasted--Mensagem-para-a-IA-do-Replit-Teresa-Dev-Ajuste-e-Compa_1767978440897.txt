@@ -1,0 +1,67 @@
+## Mensagem para a IA do Replit (Teresa/Dev) — Ajuste e Compatibilização do NTG Trips Club
+
+Quero que você **analise o prompt/especificação abaixo** e **adapte a implementação ao sistema que já está sendo desenvolvido**, para garantir que esta atualização **não desencaixe** da arquitetura atual.
+
+### Objetivo
+Implementar o **NTG Trips Club** como uma camada evolutiva do produto atual, reaproveitando:
+- autenticação existente
+- banco de dados e tabelas já criadas
+- componentes e layout já implementados
+- rotas e padrões de API atuais
+- padrões de naming e estrutura de pastas do projeto
+
+### O que você deve fazer (ordem de trabalho)
+1) **Auditar o sistema atual**
+   - Liste rapidamente: stack (framework), padrão de rotas, modelo de dados existente, e como hoje são representadas “viagens/roteiros”.
+   - Identifique o que já existe que pode ser reaproveitado.
+
+2) **Mapear compatibilidade**
+   - Compare o que já existe com o que o Club precisa:
+     - Roteiros-Proposta (votação/intenções)
+     - Viagens Abertas (com data, preço final, reservas)
+     - Membership (desconto e prioridade)
+     - Álbum Digital (fotos e vídeos para download)
+     - Add-ons (sessão individual)
+     - Duas programações: Essencial vs Completa
+
+3) **Propor a melhor forma de encaixe**
+   - Priorize **alterações incrementais**, evitando reescritas grandes.
+   - Sempre que possível:
+     - adicione colunas em tabelas existentes ao invés de criar tabelas novas
+     - crie tabelas novas apenas quando ficar claramente melhor e mais limpo
+
+4) **Entregar um plano de implementação sem quebrar nada**
+   - Liste mudanças necessárias em:
+     - Banco de dados (migrations)
+     - Backend (novas rotas/endpoints ou adaptação dos atuais)
+     - Frontend (novas páginas e/ou novos componentes)
+     - Regras de negócio (prioridade e desconto do Club)
+   - Indique riscos e como mitigar (ex.: flags, deploy parcial, feature toggle)
+
+5) **Implementar**
+   - Faça as mudanças em etapas pequenas e seguras, com commits coerentes.
+   - Garanta que o sistema antigo continue funcional durante a transição.
+
+### Requisitos de compatibilidade (importante)
+- A atualização deve ser **backward compatible**: nada do que já funciona pode parar.
+- Se houver divergência entre meu prompt e o que já existe, **priorize encaixar no que já existe**, e me mostre:
+  - o que mudou
+  - por que mudou
+  - como fica o resultado final
+
+### Regras fixas do produto (não podem ser perdidas)
+- **Toda viagem é documentada** (fotos + vídeos) e entregue em **Álbum Digital** para download.
+- Existe **sessão individual opcional** (add-on).
+- Toda viagem tem sempre **2 programações**:
+  - Essencial (económica)
+  - Completa (visitas pagas opcionais)
+- O fluxo do Club:
+  - publicar roteiros-proposta → votação + lista de interessados → atingir mínimo → abrir viagem com data e preço final
+- Membros do Club têm:
+  - **desconto (%)**
+  - **prioridade na reserva** (janela antecipada)
+
+---
+
+# ESPECIFICAÇÃO / PROMPT COMPLETO (base)
+> (Cole aqui, abaixo, o Markdown completo do NTG Trips Club que enviei anteriormente, sem alterar.)

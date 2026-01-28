@@ -1,0 +1,116 @@
+{
+  "colorScheme": "light",
+  "fonts": [
+    {
+      "family": "Google Sans",
+      "count": 20
+    },
+    {
+      "family": "roboto",
+      "count": 20
+    },
+    {
+      "family": "Noto Sans Myanmar UI",
+      "count": 20
+    },
+    {
+      "family": "Noto Sans Khmer",
+      "count": 20
+    },
+    {
+      "family": "arial",
+      "count": 20
+    },
+    {
+      "family": "sans-serif",
+      "count": 20
+    }
+  ],
+  "colors": {
+    "primary": "#0B57D0",
+    "accent": "#A50E0E",
+    "background": "#FFFFFF",
+    "textPrimary": "#5F6368",
+    "link": "#A50E0E"
+  },
+  "typography": {
+    "fontFamilies": {
+      "primary": "Google Sans",
+      "heading": "Google Sans"
+    },
+    "fontStacks": {
+      "body": [
+        "Google Sans",
+        "roboto",
+        "Noto Sans Myanmar UI",
+        "Noto Sans Khmer",
+        "arial",
+        "sans-serif"
+      ],
+      "heading": [
+        "Google Sans",
+        "roboto",
+        "Noto Sans Myanmar UI",
+        "Noto Sans Khmer",
+        "arial",
+        "sans-serif"
+      ],
+      "paragraph": [
+        "Google Sans",
+        "roboto",
+        "Noto Sans Myanmar UI",
+        "Noto Sans Khmer",
+        "arial",
+        "sans-serif"
+      ]
+    },
+    "fontSizes": {
+      "h1": "44px",
+      "h2": "44px",
+      "body": "14px"
+    }
+  },
+  "spacing": {
+    "baseUnit": 4,
+    "borderRadius": "8px"
+  },
+  "components": {
+    "input": {
+      "background": "transparent",
+      "textColor": "#1F1F1F",
+      "borderColor": null,
+      "borderRadius": "4px",
+      "borderRadiusCorners": {
+        "topLeft": "4px",
+        "topRight": "4px",
+        "bottomRight": "4px",
+        "bottomLeft": "4px"
+      },
+      "shadow": "none"
+    }
+  },
+  "images": {
+    "logo": null,
+    "favicon": null,
+    "ogImage": null
+  },
+  "__framework_hints": [],
+  "__llm_button_reasoning": {
+    "primary": {
+      "index": -1,
+      "text": "N/A",
+      "reasoning": "LLM failed"
+    },
+    "secondary": {
+      "index": -1,
+      "text": "N/A",
+      "reasoning": "LLM failed"
+    },
+    "confidence": 0
+  },
+  "confidence": {
+    "buttons": 0,
+    "colors": 0,
+    "overall": 0
+  }
+}

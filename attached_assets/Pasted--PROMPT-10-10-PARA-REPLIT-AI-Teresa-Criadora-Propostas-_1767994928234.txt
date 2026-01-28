@@ -1,0 +1,184 @@
+# PROMPT (10/10) PARA REPLIT AI — “Teresa Criadora” + Propostas de Membros + Meta por PAGAMENTO (simples e seguro)
+
+Você é o Replit AI. Atualize o sistema EXISTENTE de forma incremental e backward compatible, sem quebrar nada.  
+Objetivo: adicionar ao NTG Trips Club um módulo onde **Membros do Club criam roteiros-proposta com ajuda do agente Teresa**, colocam para votação, e quando a proposta atingir **meta de reservas pagas (ou depósito)** a NTG agenda a viagem e o criador recebe **crédito** (ou 1 vaga Essential) automaticamente.
+
+## 0) Contexto do sistema atual (não mudar)
+- Frontend: React + Vite + TypeScript + Tailwind + Framer Motion (Wouter)
+- Backend: Express + TypeScript (/api/*)
+- DB: PostgreSQL + Drizzle ORM
+- Auth: Replit Auth (OIDC)
+- Storage: Object Storage (GCS)
+- Tabelas existentes relevantes:
+  - trips (base)
+  - userProfiles
+  - tripFavorites
+  - tripGallery + mediaAssets
+  - pageLayouts + PageBlock
+- Rotas existentes:
+  - /trips-club
+  - /trips-club/onboarding
+  - /minha-conta
+  - /viagens/lista
+  - /viagens/:slug
+  - /viagens/:slug/album
+  - Admin: Dashboard, Trips, Albums
+
+## 1) Regras do produto (fixas)
+1) Toda viagem tem **2 programações**: Essencial (económica) e Completa (paga opcional).  
+2) Toda viagem inclui **Álbum Digital** (fotos+vídeos) para download após a viagem (usar tripGallery/mediaAssets).  
+3) “Sessão individual” é **add-on** opcional.  
+4) Fluxo Club: proposta → votos/interesse → meta paga atingida → “pronto para agendar” → admin define data/preço final → abre reservas.  
+5) Membros do Club: desconto (%) e prioridade de reserva.
+
+## 2) Princípios obrigatórios de implementação
+- Migrations apenas ADITIVAS (sem renomear/remover colunas existentes).
+- Feature flag: `FEATURE_TRIPS_CLUB_CREATOR` (default false).
+- Não alterar URLs existentes; adicionar apenas as necessárias dentro do padrão atual.
+- Implementar em fases pequenas com commits coerentes.
+
+---
+
+# ESCOPO MVP (simples e executável)
+
+## A) Propostas criadas por membros (em cima de `trips`)
+### Modelo (reaproveitar `trips`)
+Adicionar colunas em `trips` para suportar propostas do Club e autoria:
+- `sourceType`: 'ntg' | 'member' (default 'ntg')
+- `createdByUserId`: nullable (user id do criador)
+- `proposalStatus`: 'pending_review' | 'voting' | 'ready_to_schedule' | 'archived'
+- `priceRangeEssential`: JSON {min,max}
+- `priceRangeComplete`: JSON {min,max}
+- `itineraryEssential`: JSON (lista de blocos)
+- `itineraryComplete`: JSON
+- `viabilityRule`: JSON { minInterested?: number }
+- `capacity`: int (capacidade alvo)
+- `depositAmount`: int (euros) DEFAULT 0 (MVP: aceitar 0 para “sem depósito”)
+- `fundingGoalSeats`: int (número de lugares pagos necessários) DEFAULT = capacity
+- `creatorRewardType`: 'credit' | 'free_seat' DEFAULT 'credit'
+- `creatorRewardValue`: int (ex.: 80 euros de crédito) DEFAULT 80
+
+### Regras
+- Somente `membership.active=true` pode criar proposta (member).
+- Proposta de membro nasce como `pending_review`.
+- Admin aprova e muda para `voting`.
+
+## B) Interesses e votos (sem confundir com favoritos)
+- Manter `tripFavorites` como “interesse” (lista de interessados) e adicionar:
+  - `publicVisibility`: 'named' | 'anonymous' (default anonymous)
+- Criar tabela `tripVotes` separada:
+  - columns: id, tripId, userId, createdAt
+  - constraint: UNIQUE(tripId, userId)
+
+## C) Meta de “fechou” é por pagamento (não por interesse)
+### Criar tabela simples de reservas pagas (MVP sem gateway)
+Criar `tripPledges` (ou `bookings`) em modo MVP:
+- `tripId`
+- `userId`
+- `seats` int
+- `amount` int (se depositAmount > 0, amount = depositAmount*seats, senão amount=0)
+- `status`: 'pledged' | 'confirmed' | 'canceled'
+- `createdAt`
+
+### Regra de transição automática
+Quando a soma de `confirmed seats` atingir `fundingGoalSeats`:
+- atualizar `trips.proposalStatus` para `ready_to_schedule`
+- notificar admin no dashboard (badge/alert)
+- notificar criador na /minha-conta
+
+> Importante: NÃO criar data automaticamente. Admin confirma.
+
+## D) TripInstances (viagens com data) + Bookings (fase 2 mínima)
+Criar `tripInstances`:
+- tripId (referência à proposta)
+- dateStart/dateEnd
+- finalPriceEssential/finalPriceComplete
+- capacityTotal
+- bookingStatus: 'announced' | 'member_priority' | 'public_open' | 'sold_out' | 'completed'
+
+Criar `bookings` (simples):
+- tripInstanceId
+- userId
+- packageType: 'essential' | 'complete'
+- seats
+- totalPrice
+- discountAppliedPercent
+- status: 'pending' | 'paid' | 'canceled'
+
+Add-ons (MVP):
+- `tripAddOns` + `bookingAddOns` (apenas “Sessão individual” por enquanto)
+
+## E) Recompensa do criador (simples e segura)
+### Preferência: CRÉDITO (recomendado)
+Adicionar em `userProfiles`:
+- `travelCreditCents` (ou travelCredit int em euros)
+
+Regra:
+- quando a proposta virar `ready_to_schedule` (meta paga atingida):
+  - se `creatorRewardType='credit'`: adicionar `creatorRewardValue` ao crédito do criador
+- ao reservar uma TripInstance, permitir usar crédito para abater do total.
+
+> Alternativa opcional (não implementar no MVP): “1 vaga Essential grátis” após X pagantes.
+
+---
+
+# AGENTE TERESA (IA) — MVP sem complicar
+Criar endpoint: `POST /api/teresa/proposal-draft`
+Input: texto livre com preferências.
+Output: JSON validado que preenche campos de trip (title/subtitle/narrative, >=2 destinos, itinerários essential+complete, price ranges, tags).
+
+Não inventar logística impossível. Sempre bate-volta saindo de Coimbra.
+
+Frontend:
+- Nova página: `/trips-club/criar`
+  - chat simples + preview do roteiro
+  - botão “Salvar rascunho”
+  - botão “Enviar para revisão”
+- Em /minha-conta: aba “Minhas Propostas” com status.
+
+---
+
+# PÁGINAS/ROTAS (encaixar nas existentes)
+- /trips-club: feed de propostas (ntg + member), filtros por status
+- /trips-club/p/:slug: detalhe da proposta (votar + interesse + pledges)
+- /trips-club/criar: criador com Teresa (somente membros)
+- /minha-conta: mostrar votos/interesses/pledges + minhas propostas + meu crédito
+- Admin Dashboard:
+  - lista de pending_review
+  - lista de ready_to_schedule
+  - botão “Aprovar para votação”
+  - botão “Abrir viagem” (cria tripInstance)
+
+---
+
+# EXECUÇÃO EM FASES (não pular etapas)
+Fase 1 (DB + leitura):
+- adicionar colunas em trips + userProfiles + tripFavorites
+- criar tripVotes + tripPledges
+- endpoints GET feed/detalhe
+
+Fase 2 (criação + Teresa):
+- /trips-club/criar + POST /api/teresa/proposal-draft
+- POST create proposal (pending_review)
+- admin approve → voting
+
+Fase 3 (meta paga + ready_to_schedule + crédito):
+- confirmar pledges manualmente via admin (MVP)
+- auto status ready_to_schedule
+- aplicar crédito ao criador
+
+Fase 4 (abrir viagem):
+- tripInstances + bookings básicos
+- member priority window (se já existe membership)
+
+---
+
+# CHECKLIST FINAL (obrigatório)
+Ao final, entregue:
+1) Diff do schema (novas colunas/tabelas)
+2) Lista de endpoints criados
+3) Lista de páginas criadas/alteradas
+4) Onde foi aplicado feature flag
+5) Como ficou backward compatible com /viagens/* e /trips-club atuais
+
+Agora implemente com cuidado incremental e sem refactor grande.

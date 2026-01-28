@@ -1,0 +1,190 @@
+Crie no Replit (Next.js App Router + TypeScript + Tailwind) um formulário interativo “Typeform-like” para o funil NTG Coimbra, com 1 pergunta por tela, transições suaves, visual premium dark, alta legibilidade, microcopy humana e experiência mobile-first. O formulário deve ser parte do app e ficar acessível em /coimbra/conhecer/form.
+
+OBJETIVO DO FORM
+- Capturar dados de qualificação do visitante para:
+  (A) gerar um “Briefing para Teresa” (texto pronto para WhatsApp com tom humano)
+  (B) gerar um “Lead CRM” (JSON estruturado com tags e segmentação)
+- Ao final, salvar o lead (mock inicialmente) e exibir uma tela de resumo + CTA “Abrir WhatsApp da Teresa” com mensagem pré-preenchida contendo o briefing e lead_id.
+
+ESTILO VISUAL (UX/Design)
+- Tema dark, minimalista, premium, estilo link-in-bio.
+- Conteúdo central max-width ~560px, cards com borda sutil, radius grande (2xl), botões pill.
+- Transição entre telas: fade/slide sutil (sem exageros).
+- Indicador de progresso (ex.: 1/7, barra fina).
+- Micro interações: haptic-like (simulado) e feedback claro.
+- Suporte teclado: Enter para avançar quando fizer sentido.
+- Botão “Voltar” discreto.
+- Um campo por tela, sem rolagem longa (preferir scroll interno só quando necessário).
+
+FORMATO: 1 pergunta por tela (wizard)
+Cada pergunta deve ser uma “screen” com:
+- Title (curto e humano)
+- Helper text (1 linha, opcional)
+- Input adequado (chips, radio cards, scroll selector, country picker, etc.)
+- CTA: “Continuar”
+- Validação leve (mensagens humanas, não “erro 400”)
+
+PERGUNTAS (7 telas)
+Tela 1 — País de origem (country selector)
+- Copy:
+  Título: “De onde você vem?”
+  Sub: “Só pra eu ajustar o jeito de te guiar.”
+- Input:
+  Country picker com busca (autocomplete). Sugira primeiro: Brasil, Portugal, Espanha, França, Alemanha, Reino Unido, EUA, “Outro”.
+- Output:
+  country_code, country_name
+  tags: pais:XX, perfil:internacional/nacional
+
+Tela 2 — Tempo em Coimbra (single select)
+- Título: “Quanto tempo você tem em Coimbra agora?”
+- Opções em cards grandes:
+  “1–2h”, “Meio dia”, “Dia inteiro”, “Mais de um dia”
+- Output:
+  time_bucket: curto/medio/longo/estadia
+  tags: tempo:...
+
+Tela 3 — Companhia (single select com ícones)
+- Título: “Você está explorando Coimbra…”
+- Opções em cards com ícones:
+  “Sozinho(a)”, “Em casal”, “Com amigos”, “Em família”
+- Output:
+  party_type: solo/casal/grupo/familia
+  tags: companhia:...
+
+Tela 4 — Interesses (multi-select com caixas)
+- Título: “Posso te ajudar com:”
+- Sub: “Pode marcar mais de uma opção.”
+- Checkboxes em cards com microcopy:
+  1) “Pontos turísticos mais visitados (com história)”
+  2) “Pontos secretos de Coimbra (fora do óbvio)”
+  3) “Gastronomia”
+  4) “Experiências gratuitas (rotas a pé, jardins, atividades)”
+  5) “Experiências que recomendamos (pagas)”
+- Output:
+  interests: array de enums [classicos, oculto, gastronomia, gratis, experiencias_pagas]
+  tags: interesse:...
+
+Tela 5 — Estilo de orientação (single select)
+- Título: “Como você prefere receber as recomendações?”
+- Opções em cards:
+  “Sugestões rápidas”, “Com contexto e história”, “Guiado passo a passo”, “Prefiro conversar com a Teresa”
+- Output:
+  guidance_style: rapido/contexto/guiado/conversa
+  tags: estilo:...
+
+Tela 6 — Nome (input humanizado)
+- Título: “Como posso te chamar?”
+- Sub: “Prometo não transformar isso em mailing chato.”
+- Input:
+  Text input com placeholder “Ex.: Ana”
+- Output:
+  first_name (sanitize)
+  tag opcional nome:...
+
+Tela 7 — Faixa etária (single select)
+- Título: “Sua faixa etária”
+- Sub: “Ajuda a sugerir o ritmo certo (e evitar rolê errado).”
+- Opções:
+  18–25, 26–35, 36–50, 51+
+- Output:
+  age_range enum
+  tags: idade:...
+
+TELA FINAL (resultado + CTA WhatsApp)
+- Mostrar um resumo bonito:
+  “Perfeito, [Nome]. Com base no que você disse…”
+- Mostrar 3 cards “Sugestão inicial” (placeholder por enquanto), escolhidas por regras simples:
+  - se interests inclui gastronomia -> sugerir “Guia Gastronômico”
+  - se inclui oculto -> “Coimbra Oculta”
+  - se inclui experiencias_pagas -> sugerir “Walk n Photo Tour” ou “Jantar com Fado”
+- CTA grande:
+  “Abrir WhatsApp da Teresa”
+  Link: https://wa.me/351931358278?text={MENSAGEM_ENCODED}
+- Mensagem deve incluir:
+  - saudação
+  - lead_id
+  - resumo estruturado (bullet)
+  - pedido de recomendação e pergunta final do usuário (se houver)
+Exemplo de mensagem (PT):
+“Olá Teresa! Sou {nome}. Lead #{lead_id}.
+Contexto:
+- País: {pais}
+- Tempo: {tempo}
+- Companhia: {companhia}
+- Interesses: {lista}
+- Estilo: {estilo}
+- Faixa etária: {idade}
+Pode me sugerir um plano e opções (pins/gastro/experiências) para hoje?”
+
+OUTPUTS (obrigatório)
+Ao finalizar, gere 2 objetos:
+
+1) TERESA_BRIEF (string)
+- Texto pronto para WhatsApp (tom humano, curto e claro)
+- Inclui resumo e uma recomendação de “primeiro passo”
+
+2) CRM_LEAD (JSON)
+Estrutura recomendada:
+{
+  "lead_id": "uuid",
+  "created_at": "ISO",
+  "source": "qr|ads|organic",
+  "language": "pt|en|es|zh",
+  "identity": {
+    "first_name": "...",
+    "country_code": "BR",
+    "country_name": "Brasil",
+    "age_range": "26_35"
+  },
+  "context": {
+    "time_bucket": "medio",
+    "party_type": "casal",
+    "guidance_style": "contexto"
+  },
+  "interests": ["gastronomia","oculto","experiencias_pagas"],
+  "tags": [
+    "pais:BR",
+    "perfil:internacional",
+    "tempo:medio",
+    "companhia:casal",
+    "interesse:gastronomia",
+    "interesse:oculto",
+    "interesse:experiencias_pagas",
+    "estilo:contexto",
+    "idade:26_35"
+  ],
+  "segment_primary": "TOURIST_PREMIUM|DAYTRIP_PT|LOCAL_CURIOUS|EXPLORER_AUTONOMOUS",
+  "segment_rules_applied": ["rule_..."],
+  "teresa_mode_suggestions": ["pins","gastro","experiencias"],
+  "whatsapp": {
+    "to": "+351931358278",
+    "prefilled_message": "..."
+  }
+}
+
+SEGMENTAÇÃO (regras iniciais simples)
+Implemente função computeSegment():
+- Se country != Portugal e (time_bucket in [medio,longo,estadia]) e (guidance_style in [contexto,guiado,conversa]) => TOURIST_PREMIUM
+- Se country == Portugal e time_bucket in [medio,longo] e interests inclui experiencias_pagas => DAYTRIP_PT
+- Se “perfil local” não foi perguntado aqui, inferir “LOCAL_CURIOUS” se country == Portugal e time_bucket == curto e interests inclui gastronomia ou oculto.
+- Se guidance_style == rapido ou livre (não existe livre aqui; use rapido) e interests inclui gratis => EXPLORER_AUTONOMOUS
+Deixe a função pronta para ajustes.
+
+IMPLEMENTAÇÃO TÉCNICA
+- Criar componente WizardForm com estado central (useReducer).
+- Cada tela como componente (StepCountry, StepTime, StepParty, StepInterests, StepStyle, StepName, StepAge, StepResult).
+- Validar e permitir avançar apenas quando a resposta mínima estiver preenchida.
+- Persistir progresso em localStorage para não perder se fechar aba (com opção “Recomeçar”).
+- No final, gerar uuid lead_id (pode usar crypto.randomUUID()).
+- Salvar CRM_LEAD em memória (mock) e também logar no console por enquanto.
+- Criar um arquivo /lib/lead.ts com as funções:
+  - buildTags()
+  - computeSegment()
+  - buildTeresaBrief()
+- Criar testes simples (ou pelo menos funções puras bem organizadas).
+
+ENTREGA
+- O app deve rodar no Replit com npm run dev.
+- Fornecer um README curto explicando como trocar o mock por Supabase depois.
+
+Construa com UX excelente, copy humanizada e outputs exatamente nos formatos definidos.

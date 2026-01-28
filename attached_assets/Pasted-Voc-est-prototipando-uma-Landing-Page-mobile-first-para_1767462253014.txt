@@ -1,0 +1,59 @@
+Você está prototipando uma Landing Page mobile-first para “NTG Trips Club”.
+Quero que você ADICIONE uma nova seção chamada “Encontre sua Tribo” (ou “As Tribos do Trips Club”) logo após a seção “Como funciona” e antes da seção “O Termômetro”.
+Objetivo da seção:
+Fazer o visitante se identificar rapidamente com um perfil de viagem (tribo)
+Aumentar sensação de exclusividade e pertencimento
+Incentivar o CTA para onboarding (“Definir minha tribo”)
+Tom:
+Sofisticado, minimalista, anti-turismo de massa
+Sentimento de clube fechado e descoberta
+Copy curta, precisa, sem frases de agência
+Formato visual:
+Mobile-first
+Grid de cards (2 colunas no mobile quando couber, 3–4 colunas no desktop)
+Cada card com: Nome da tribo + 1 frase de essência + 2 bullets “prefere” + etiqueta de estilo (ex: ritmo / grupo)
+Ícones simples e discretos (sem clichê turístico)
+Espaçamento generoso e tipografia limpa
+Seção (copiar a copy abaixo exatamente ou muito próxima):
+Título da seção:
+“Encontre sua Tribo”
+Subtítulo:
+“Não é um pacote. É um clube. A viagem melhora quando as pessoas combinam.”
+Cards de tribos (7 cards):
+Os Caminhantes
+Essência: “Ritmo humano. Paisagem, pausa e presença.”
+Prefere: “natureza e trilhos leves” | “roteiros sem correria”
+Etiqueta: “Ritmo: lento–moderado”
+Os Curiosos
+Essência: “Viajar para entender o lugar, não só ver.”
+Prefere: “história e contexto” | “lugares com narrativa”
+Etiqueta: “Estilo: cultura”
+Os Sensoriais
+Essência: “Sabores, atmosfera e detalhes que ficam.”
+Prefere: “gastronomia local” | “experiências autênticas”
+Etiqueta: “Estilo: sensorial”
+Os Fora do Mapa
+Essência: “Destinos discretos. Caminhos improváveis.”
+Prefere: “lugares secretos” | “grupos pequenos”
+Etiqueta: “Estilo: exploratório”
+Os Contemplativos
+Essência: “Beleza, silêncio e espaço interno.”
+Prefere: “paisagens e luz” | “tempo livre”
+Etiqueta: “Ritmo: lento”
+Os Pragmáticos
+Essência: “Bem organizado, simples e sem fricção.”
+Prefere: “logística clara” | “bom custo-benefício”
+Etiqueta: “Estilo: direto”
+Os Visuais
+Essência: “O mundo como enquadramento.”
+Prefere: “cenários marcantes” | “melhores horários de luz”
+Etiqueta: “Estilo: visual”
+CTA da seção:
+Botão primário: “Definir minha tribo”
+Texto pequeno abaixo do botão:
+“Leva menos de 2 minutos.”
+Entrega esperada:
+Um bloco/section completo inserido na LP
+Hierarquia visual clara
+Layout responsivo
+Copys curtas e alinhadas ao tom do NTG Trips Club

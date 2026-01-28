@@ -1,0 +1,196 @@
+NTG Trips & NTG Trips Club
+
+Documento detalhado (com poder real do público e criação de viagens)
+
+1) O que é a NTG (direto ao ponto)
+
+A NTG (Non-Tourist Guide) cria roteiros curtos e experiências de viagem com curadoria, narrativa e ritmo humano.
+Não é “ver o máximo”. É viver melhor.
+
+⸻
+
+2) O que é o NTG Trips
+
+O NTG Trips é a nossa biblioteca de roteiros (bate-voltas e escapadinhas) já desenhados, com:
+	•	lógica de deslocamento realista
+	•	pausas e ritmo confortável
+	•	lugares que valem o dia
+	•	recomendações honestas (sem “imperdível” genérico)
+
+⸻
+
+3) O que é o NTG Trips Club (a parte que muda o jogo)
+
+O NTG Trips Club é onde as viagens deixam de ser só “o que a NTG lança” e passam a ser o que a comunidade escolhe e cria.
+
+O Club tem duas forças:
+
+3.1 Poder de decisão por votação
+
+A NTG publica roteiros-proposta (sem data fixa).
+Os membros votam, entram na lista de interessados e, quando há tração suficiente, o roteiro:
+	•	ganha data
+	•	ganha preço final
+	•	abre reservas
+
+3.2 Poder de criação: membros criam roteiros com a Teresa
+
+Membros podem criar o próprio roteiro com ajuda do Agente Teresa Creator (IA da NTG).
+Esse roteiro entra no Club para votação e interesse, e se alcançar tração suficiente, vira viagem real.
+
+Em termos humanos: vocês não “consomem” viagens. Vocês provocam viagens.
+
+⸻
+
+4) Como nasce uma viagem no Club (passo a passo)
+
+Caminho A: Roteiro criado pela NTG
+	1.	NTG publica uma proposta
+	2.	membros votam e entram na lista
+	3.	atingiu tração → NTG abre a viagem (data + preço final)
+	4.	membros reservam primeiro
+	5.	público geral entra depois (se houver vagas)
+
+Caminho B: Roteiro criado por um membro com Teresa
+	1.	membro usa a Teresa Creator para criar o roteiro (com regras de realismo)
+	2.	o roteiro passa por uma validação rápida (para evitar spam e delírio logístico)
+	3.	o roteiro entra em votação no Club
+	4.	quando há tração suficiente, a NTG agenda e abre reservas
+	5.	o criador recebe uma recompensa (ver abaixo)
+
+⸻
+
+5) O Agente Teresa Creator (como funciona, sem caos)
+
+A Teresa Creator é uma IA desenhada para criar roteiros executáveis, e não “sonhos mal dormidos”.
+
+Regras fixas da Teresa (para manter qualidade)
+	•	Saída e volta sempre de Coimbra
+	•	1 ou 2 paradas principais no máximo
+	•	Em cada parada:
+	•	1 experiência gratuita (essencial)
+	•	1 experiência paga opcional (completa)
+	•	Sempre existem duas programações:
+	•	Essencial (económica): sem obrigar gastos
+	•	Completa (paga): inclui experiências opcionais
+	•	Tempo total realista (bate-volta), com pausas
+
+Por que isso é importante?
+
+Porque se não existir regra, alguém vai criar:
+“Coimbra → Porto → Douro → Nazaré → Coimbra”
+e chamar isso de “experiência”.
+
+⸻
+
+6) Quando uma proposta vira viagem de verdade
+
+Uma proposta pode “ganhar vida” por:
+	•	interessados suficientes (sinal forte de procura)
+e/ou, idealmente,
+	•	reservas pagas / depósito (prova real)
+
+A NTG só abre oficialmente quando dá para executar com qualidade:
+	•	logística confirmada
+	•	capacidade definida
+	•	preço final fechado
+	•	condições mínimas garantidas
+
+O Club decide a direção.
+A NTG garante o padrão.
+
+⸻
+
+7) Recompensa do criador (sem virar esquema)
+
+Quando um roteiro criado por membro vira viagem oficial, o criador recebe recompensa justa por ter gerado tração.
+
+Recompensa recomendada (modelo mais saudável):
+	•	crédito de viagem (ex.: €X) aplicado na reserva
+
+Por que crédito é melhor que “grátis total”?
+	•	protege a margem do projeto
+	•	reduz fraude (“enchimento” por amigos que somem depois)
+	•	mantém o incentivo forte sem punir o operacional
+
+Tradução: recompensa sim, ingenuidade não.
+
+⸻
+
+8) O que está incluído em todas as viagens NTG
+
+8.1 Álbum Digital (fotos + vídeos)
+
+Todas as viagens são documentadas com fotos e vídeos e entregues num Álbum Digital para download.
+
+8.2 Sessão individual (opcional)
+
+Retrato/casal/família pode ser contratado como add-on com entrega dedicada.
+
+⸻
+
+9) Duas programações em todas as viagens
+
+Essencial (económica)
+	•	experiências gratuitas
+	•	sem obrigar entradas pagas
+
+Completa (paga)
+	•	inclui experiências pagas opcionais (monumentos, museus, provas, etc.)
+
+A NTG organiza os momentos do dia para que o grupo continue fluido.
+
+⸻
+
+10) Vantagens de ser membro (real, não decorativa)
+	•	prioridade nas reservas
+	•	desconto nas viagens do Club
+	•	poder de decisão: votar no que abre
+	•	poder de criação: publicar o próprio roteiro com a Teresa
+	•	histórico e participação: ver o que está em votação, o que está “quase a abrir” e o que já abriu
+
+⸻
+
+11) FAQ aprofundado (com o que interessa)
+
+“Se eu criar um roteiro, ele vira viagem automaticamente?”
+
+Não. Ele vira candidato.
+Precisa de votos/interesse e validação operacional. A NTG mantém o padrão.
+
+“Posso criar qualquer coisa?”
+
+Não. A Teresa Creator já limita para ficar executável (Coimbra, 1–2 paradas, etc.).
+E pode haver revisão antes de publicar.
+
+“O que conta para abrir: votos, interessados ou pagamentos?”
+
+Votos e interessados mostram desejo.
+Pagamentos/depósito mostram compromisso.
+O modelo mais sólido usa os dois.
+
+“O Club manda em tudo?”
+
+O Club manda na direção.
+A NTG manda na execução (qualidade, segurança, logística).
+
+⸻
+
+12) Manifesto curto (a filosofia por trás)
+
+A maioria das viagens falha por dois motivos:
+	1.	excesso de promessas
+	2.	falta de desenho realista
+
+O NTG Trips Club existe para inverter isso:
+	•	primeiro a comunidade escolhe e valida
+	•	depois a NTG executa com qualidade
+	•	e no fim, sobra o que importa: memória, não stress
+
+⸻
+
+13) Próximo passo
+	•	Ver roteiros em votação
+	•	Votar e entrar na lista
+	•	Entrar no Club para ter prioridade/desconto
+	•	Criar um roteiro com a Teresa (se quiser puxar a comunidade)

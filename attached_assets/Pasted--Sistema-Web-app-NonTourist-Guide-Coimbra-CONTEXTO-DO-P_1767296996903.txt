@@ -1,0 +1,227 @@
+# Sistema Web-app NonTourist Guide - Coimbra
+
+## CONTEXTO DO PROJETO
+Desenvolver uma aplicação full-stack com IA para NonTourist Guide (NTG), 
+empresa de experiências turísticas autênticas em Coimbra, Portugal.
+
+## ARQUITETURA GERAL
+
+### Stack Técnico Sugerido:
+- **Frontend**: React/Next.js + TailwindCSS
+- **Backend**: Node.js + Express
+- **Database**: PostgreSQL ou MongoDB
+- **IA/LLM**: OpenAI API (para Agente Teresa)
+- **Integração**: WhatsApp Business API
+- **Deploy**: Replit → produção
+
+### Branding NTG:
+[VOCÊ DEVE ADICIONAR: cores, tipografia, logo URL, identidade visual]
+
+---
+
+## FLUXO DE USUÁRIO - LANDING PAGE
+
+### Página Inicial (/)
+**Elementos:**
+- Logo NTG (topo)
+- Hero section compacta com headline atrativa
+- 3 CTAs principais (botões):
+
+#### 1️⃣ "QUERO CONHECER COIMBRA"
+**Comportamento:** Abre expansível (accordion/toggle)
+**Conteúdo do expansível:**
+- Texto: "Conheça a Teresa, a nossa Guia de Inteligência Orgânica de Coimbra, 
+  e desbloqueie lugares que turistas não chegam!"
+- Botão CTA: "Quero Falar com a Teresa!"
+
+**Ao clicar no CTA:**
+→ Redireciona para `/qualificacao`
+
+#### 2️⃣ "QUERO VIVER COIMBRA"
+**Comportamento:** Clique direto
+→ Redireciona para `/experiencias`
+
+#### 3️⃣ "QUERO CONHECER LUGARES FORA DE COIMBRA"
+**Comportamento:** Clique direto
+→ Redireciona para `/ntg-trips`
+
+---
+
+## MÓDULO 1: FORMULÁRIO DE QUALIFICAÇÃO (/qualificacao)
+
+### Funcionalidade:
+Formulário com 5 perguntas estratégicas para segmentar leads e personalizar 
+a experiência com a Agente Teresa.
+
+### Perguntas (VOCÊ DEVE DEFINIR):
+1. [Ex: "Primeira vez em Coimbra?"]
+2. [Ex: "Quantos dias vai ficar?"]
+3. [Ex: "Viaja sozinho(a) ou acompanhado(a)?"]
+4. [Ex: "Que tipo de experiência procura?" - múltipla escolha]
+5. [Ex: "Como nos conheceu?"]
+
+### Output do Formulário:
+**Ao submeter:**
+1. Salvar no banco de dados → tabela `leads_qualificados`
+   - Campos: nome, email, telefone, respostas[], tipo_lead, data_qualificacao
+   - Segmentação automática por tipo (ex: aventureiro, gastronômico, cultural)
+
+2. Enviar dados via webhook/API para WhatsApp Business
+   - Estrutura JSON com dados do lead
+   - Acionar Agente Teresa com contexto do usuário
+
+3. Redirecionar usuário para página de confirmação com:
+   - QR Code do WhatsApp da Teresa
+   - Mensagem: "A Teresa já recebeu suas preferências e vai te contactar no WhatsApp!"
+
+---
+
+## MÓDULO 2: AGENTE TERESA (WhatsApp IA)
+
+### Perfil do Agente:
+**Nome:** Teresa
+**Papel:** Guia Digital de Inteligência Orgânica de Coimbra
+**Tom:** Acolhedora, local, conhecedora, pessoal
+
+### Fluxo de Conversação:
+1. Mensagem inicial personalizada (usa dados da qualificação)
+2. Pergunta: "Que tipo de recomendação posso te dar hoje?"
+
+**Opções:**
+- 📍 **Guia de Pins**: Usuário pergunta sobre lugares específicos, 
+  Teresa contextualiza história, curiosidades, dicas locais
+- 🍽️ **Guia Gastronômico**: Recomendações de restaurantes curados pela NTG, 
+  explicação do porquê, pratos típicos sugeridos
+- ✨ **Guia de Experiências**: Experiências pagas da curadoria NTG 
+  (puxar do database), com descrição e link de compra
+
+### Integração Técnica:
+- WhatsApp Business API + OpenAI API (GPT-4)
+- RAG (Retrieval Augmented Generation) com database de:
+  - Lugares de Coimbra (pins)
+  - Restaurantes recomendados
+  - Experiências cadastradas
+- Sistema de memória de conversação por usuário
+
+---
+
+## MÓDULO 3: CATÁLOGO DE EXPERIÊNCIAS (/experiencias)
+
+### Layout:
+- Grid responsivo de cards
+- Cada card mostra:
+  - Foto da experiência
+  - Título
+  - Breve descrição
+  - Preço
+  - Botão "Reservar" ou "Saiba Mais"
+
+### Funcionalidade:
+- Filtros: tipo de experiência, preço, duração, data
+- Modal ou página detalhada ao clicar
+- Integração com sistema de pagamento (Stripe/PayPal)
+
+### Database:
+Tabela `experiencias`:
+- id, nome, descricao, preco, duracao, categoria, imagem_url, 
+  disponibilidade, terceiro (boolean), link_compra
+
+---
+
+## MÓDULO 4: NTG TRIPS (/ntg-trips)
+
+### Seções:
+
+#### A) Viagens Disponíveis para Reserva
+- Cards com: destino, data, vagas disponíveis, preço
+- Botão "Reservar Agora" → página de venda individual
+
+#### B) Viagens Realizadas (Galeria)
+- Cards com: destino, data, thumbnail
+- Ao clicar → página com galeria de fotos
+- **Acesso:** apenas quem participou (login/código)
+
+#### C) Formulário "Me Avise"
+- Campos: nome, email, preferências de destino/tipo de viagem
+- Salvar em `leads_trips` para remarketing
+
+### Database:
+Tabela `viagens`:
+- id, destino, data_inicio, data_fim, preco, vagas_totais, 
+  vagas_disponiveis, status (aberta/fechada/realizada), 
+  galeria_url, descricao_venda
+
+---
+
+## MÓDULO 5: PAINEL ADMINISTRATIVO (/admin)
+
+### Autenticação:
+- Login seguro (JWT)
+- Roles: admin, editor
+
+### Funcionalidades:
+
+#### Dashboard Principal:
+- KPIs em cards:
+  - Total de leads qualificados (por período)
+  - Conversão formulário → WhatsApp
+  - Experiências mais reservadas
+  - Receita total
+  - Viagens com mais interesse
+- Gráficos: evolução de leads, origem de tráfego, segmentação
+
+#### Gestão de Experiências:
+- CRUD completo (Create, Read, Update, Delete)
+- Upload de imagens
+- Status ativo/inativo
+
+#### Gestão de Viagens:
+- CRUD completo
+- Gerenciar vagas
+- Upload de galeria de fotos
+- Gerar código de acesso para participantes
+
+#### Gestão de Leads:
+- Tabela com filtros e busca
+- Exportar para CSV
+- Visualizar perfil completo do lead
+- Status: novo, contactado, convertido
+
+#### Gestão de Conteúdo (Teresa):
+- Atualizar base de conhecimento (pins, restaurantes)
+- Histórico de conversas (com privacidade)
+
+---
+
+## REQUISITOS TÉCNICOS
+
+### Responsividade:
+- Mobile-first design
+- Breakpoints: 320px, 768px, 1024px, 1440px
+
+### Performance:
+- Lazy loading de imagens
+- Code splitting
+- Cache estratégico
+
+### SEO:
+- Meta tags dinâmicas
+- Open Graph para compartilhamento
+- Sitemap XML
+
+### Segurança:
+- Sanitização de inputs
+- Rate limiting nas APIs
+- HTTPS obrigatório
+- Proteção contra SQL injection
+
+### Integrações Necessárias:
+1. WhatsApp Business API
+2. OpenAI API (GPT-4 + embeddings)
+3. Gateway de pagamento
+4. Google Analytics / Plausible
+5. Cloudinary/S3 para imagens
+
+---
+
+## ESTRUTURA DE PASTAS SUGERIDA

@@ -1,0 +1,88 @@
+# PROMPT PARA REPLIT AI — Implementar “Agente Teresa Creator” no sistema atual (sem caos)
+
+Você é o Replit AI. Quero que você implemente um **Agente de IA chamado Teresa Creator** dentro do sistema existente, de forma incremental e backward compatible, anexando à arquitetura atual sem quebrar rotas, componentes, banco ou fluxos já existentes.
+
+## 0) Regras obrigatórias de implementação
+- Migrations apenas ADITIVAS (não renomear/remover colunas/tabelas existentes).
+- Feature flag `FEATURE_TRIPS_CLUB_CREATOR` (default false) para ligar/desligar.
+- Não mudar URLs existentes. Adicionar somente rotas novas necessárias no padrão atual.
+- Implementar em fases pequenas e seguras (commits coerentes).
+
+## 1) Onde isso entra no produto (visão)
+Objetivo: permitir que **membros do NTG Trips Club** criem um “roteiro-proposta” via UI com ajuda da Teresa Creator, obtendo um JSON estruturado que vira uma proposta em `trips` (status `pending_review`), e depois o Admin aprova para `voting`.
+
+Importante: esses roteiros são **bate-volta** com:
+- saída e volta sempre de Coimbra
+- 1 ou 2 paradas principais
+- em cada parada: 1 experiência gratuita + 1 experiência paga opcional
+- duas programações: Essencial (económica) e Completa (paga)
+
+## 2) Integração com arquitetura atual (conforme projeto existente)
+- Frontend: React/Vite/TS + Tailwind + Wouter
+- Backend: Express/TS em /api/*
+- DB: Postgres + Drizzle
+- Auth: Replit Auth
+- Tabelas existentes: trips, userProfiles, tripFavorites, tripGallery/mediaAssets, etc.
+
+## 3) Mudanças no banco (mínimas e compatíveis)
+Reaproveitar `trips` como tabela principal de propostas. Adicionar colunas (aditivas) para suportar a Teresa Creator:
+- `sourceType` ('ntg'|'member') default 'ntg'
+- `createdByUserId` nullable
+- `proposalStatus` ('pending_review'|'voting'|'ready_to_schedule'|'archived') default 'pending_review'
+- `startCity` default 'Coimbra'
+- `stopsJson` JSON (array de 1–2 paradas com freeExperience/paidExperience)
+- `itineraryEssential` JSON
+- `itineraryComplete` JSON
+- `priceRangeEssential` JSON {min,max}
+- `priceRangeComplete` JSON {min,max}
+- `tags` JSON array
+- `capacity` int default 10
+- `viabilityRule` JSON {minInterested} default {minInterested: 10}
+
+Se já existir campo semelhante, reutilize e apenas complemente.
+
+## 4) Endpoint do agente (backend)
+Criar endpoint:
+- `POST /api/teresa/proposal-draft`
+
+### Input (body)
+- `userMessage`: string (pedido do utilizador)
+- `preferences` (optional): objeto com budget, estilo, mobilidade, público, etc.
+
+### Output (JSON)
+O endpoint deve retornar um JSON no formato exato abaixo (contrato):
+
+```json
+{
+  "title": "string",
+  "subtitle": "string",
+  "narrativeShort": "string",
+  "startCity": "Coimbra",
+  "stops": [
+    {
+      "name": "string",
+      "freeExperience": { "label": "string", "details": "string" },
+      "paidExperience": { "label": "string", "details": "string" },
+      "effort": "leve | moderada"
+    }
+  ],
+  "durationHoursEst": 8,
+  "difficulty": "leve | moderada",
+  "priceEstimated": {
+    "essential": { "min": 0, "max": 0 },
+    "complete": { "min": 0, "max": 0 }
+  },
+  "itinerary": {
+    "essential": [{ "time": "HH:MM", "label": "string", "details": "string" }],
+    "complete": [{ "time": "HH:MM", "label": "string", "details": "string" }]
+  },
+  "includes": ["Acompanhamento NTG", "Curadoria do percurso", "Álbum digital (fotos+vídeos)"],
+  "excludes": ["Alimentação", "Entradas/experiências pagas (na Essencial)"],
+  "optionalAddOns": [
+    { "name": "Sessão individual", "description": "string", "priceSuggestion": { "min": 0, "max": 0 } }
+  ],
+  "tags": ["string"],
+  "capacitySuggestion": 10,
+  "viabilityRule": { "minInterested": 10 },
+  "coverImagePrompt": "string"
+}
